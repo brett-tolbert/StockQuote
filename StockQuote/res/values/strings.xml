@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">StockQuote</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name= "button_text">Look Up</string>
+    <string name="edittext_hint">Enter Stock Symbol</string>
+    <string name= "stock_name">Name:</string>
+    <string name= "stock_price">Price:</string>
+    <string name="stock_default">Stock Information:</string>
+    <string name="hello_user">Enter the stock quote symbol and then press Look Up!</string>
+
+</resources>
