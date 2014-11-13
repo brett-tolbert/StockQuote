@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
 		tblStockTable.setVisibility(View.INVISIBLE);
 		btnLookUp.setBackgroundColor(Color.WHITE);
 		txtURL.setTextColor(Color.WHITE);		
-		
+		//
 		btnLookUp.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
