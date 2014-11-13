@@ -7,8 +7,6 @@ package com.example.stockquote;
  */
 
 import java.io.BufferedReader;
-
-
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,6 +52,8 @@ public class MainActivity extends Activity {
 	public boolean handleMessage(Message msg) {
 		
 		try {
+			tblStockTable.setVisibility(View.INVISIBLE); //hide table for when it's being updated
+			
 			//array is used to retrieve the name and price values that were stored in the JSON string
 			String [] resultsArray = JSONParser(String.valueOf(msg.obj));
 	
@@ -68,14 +68,18 @@ public class MainActivity extends Activity {
 			
 			txtStockName.setText(resultsArray[0]);
 			txtStockPrice.setText(resultsArray[1]);
-			
+			//System.out.println("***************** " + resultsArray[1]);
 			//show the table that holds layout elements for the stock name and price
 			tblStockTable.setVisibility(View.VISIBLE);
 			
-		} catch (JSONException e) {
+			Toast.makeText(getApplicationContext(), "Getting updated Stock values", Toast.LENGTH_SHORT).show();	 // let user know new stock values are being updated
+			//tblStockTable.setVisibility(View.INVISIBLE);
+			
+			
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}				
+		} 				
 			return false;
 		}
 	});
@@ -119,10 +123,16 @@ public class MainActivity extends Activity {
 					Thread financeInfoThread = new Thread(){
 						@Override
 						public void run(){
+							int refreshNumber = 0;
 							//static URL that will be used to lookup the stock values
+							while(true){
+							
 							String yahooURL = "http://finance.yahoo.com/webservice/v1/symbols/" + stockSymbol + "/quote?format=json";
 							
 							try {
+								if(refreshNumber > 0){
+								Thread.sleep(10000); //tell application to sleep every 10 seconds
+								}
 								URL browserURL = new URL(yahooURL);
 								
 								/*
@@ -149,7 +159,8 @@ public class MainActivity extends Activity {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
+							refreshNumber++;
+							}
 						}
 					};
 				//start running the thread
