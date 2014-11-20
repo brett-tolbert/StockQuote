@@ -36,6 +36,7 @@ public class MainActivity extends Activity {
 	//variables that will reference objects in the activity main layout
 	EditText txtURL;
 	Button btnLookUp;
+	Button btnStop;
 	TableLayout tblStockTable;
 	//TextView txtVwStockName;
 	//TextView txtVwStockPrice;
@@ -43,6 +44,12 @@ public class MainActivity extends Activity {
 	TextView txtStockName;
 	TextView txtStockPrice;
 	TextView txtNoJSONResults;
+	TextView txtNumUpdates;
+	
+	Thread financeInfoThread; //the thread that will handle getting the stock quotes
+	
+	int updateCount = 0; //counter to record how many times the stock table has been updated
+	boolean continueGettingUpdates = true; 
 	
 	//thread handler that will update the layout elements will the name
 	//and price from the JSON string
@@ -52,7 +59,7 @@ public class MainActivity extends Activity {
 	public boolean handleMessage(Message msg) {
 		
 		try {
-			tblStockTable.setVisibility(View.INVISIBLE); //hide table for when it's being updated
+			//tblStockTable.setVisibility(View.INVISIBLE); //hide table for when it's being updated
 			
 			//array is used to retrieve the name and price values that were stored in the JSON string
 			String [] resultsArray = JSONParser(String.valueOf(msg.obj));
@@ -66,11 +73,15 @@ public class MainActivity extends Activity {
 				txtNoJSONResults.setVisibility(View.VISIBLE);
 			}
 			
+			updateCount++;
 			txtStockName.setText(resultsArray[0]);
 			txtStockPrice.setText(resultsArray[1]);
 			//System.out.println("***************** " + resultsArray[1]);
+			txtNumUpdates.setText("Number of Updates: " + updateCount);
+			
 			//show the table that holds layout elements for the stock name and price
 			tblStockTable.setVisibility(View.VISIBLE);
+			btnStop.setVisibility(View.VISIBLE);
 			
 			Toast.makeText(getApplicationContext(), "Getting updated Stock values", Toast.LENGTH_SHORT).show();	 // let user know new stock values are being updated
 			//tblStockTable.setVisibility(View.INVISIBLE);
@@ -92,16 +103,34 @@ public class MainActivity extends Activity {
 		//storing reference to objects of the layout file
 		txtURL = (EditText) findViewById(R.id.txtSymbol);
 		btnLookUp = (Button) findViewById(R.id.btnLookUp);
+		btnStop = (Button) findViewById(R.id.btnStop);
 		
 		tblStockTable = (TableLayout) findViewById(R.id.tableLayout1);
 		txtStockName = (TextView) findViewById(R.id.txtStockName);
 		txtStockPrice = (TextView) findViewById(R.id.txtStockPrice);
 		txtNoJSONResults = (TextView) findViewById(R.id.txtNoContent);
+		txtNumUpdates = (TextView) findViewById(R.id.txtUpdatesAmt);
 		
 		//hide the stock results table, change the color of some UI elements
 		tblStockTable.setVisibility(View.INVISIBLE);
+		btnStop.setVisibility(View.INVISIBLE);
 		btnLookUp.setBackgroundColor(Color.WHITE);
+		btnStop.setBackgroundColor(Color.WHITE);
 		txtURL.setTextColor(Color.WHITE);		
+		
+		btnStop.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				tblStockTable.setVisibility(View.INVISIBLE);
+				btnStop.setVisibility(View.INVISIBLE);
+				
+				continueGettingUpdates = false;
+				updateCount = 0;
+				financeInfoThread.interrupt(); // stop the thread
+			}
+		});
+		
 		//
 		btnLookUp.setOnClickListener(new View.OnClickListener() {
 			
@@ -110,6 +139,9 @@ public class MainActivity extends Activity {
 				//hide certain UI elements
 				tblStockTable.setVisibility(View.INVISIBLE);
 				txtNoJSONResults.setVisibility(View.INVISIBLE);
+				
+				continueGettingUpdates = true; //make sure updates will start
+				updateCount = 0;
 				
 				stockSymbol = txtURL.getText().toString();
 				
@@ -120,12 +152,12 @@ public class MainActivity extends Activity {
 				}
 				else{
 					//starting a new thread
-					Thread financeInfoThread = new Thread(){
+					financeInfoThread = new Thread(){
 						@Override
 						public void run(){
 							int refreshNumber = 0;
 							//static URL that will be used to lookup the stock values
-							while(true){
+							while(continueGettingUpdates){
 							
 							String yahooURL = "http://finance.yahoo.com/webservice/v1/symbols/" + stockSymbol + "/quote?format=json";
 							

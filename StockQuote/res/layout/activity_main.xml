@@ -41,7 +41,7 @@
 <TableLayout
     android:id="@+id/tableLayout1"
     android:layout_width="fill_parent"
-    android:layout_height="200dip"
+    android:layout_height="250dip"
     android:layout_below="@+id/txtSymbol"
     android:paddingTop="20dip"
     android:background="@color/green" >
@@ -110,6 +110,22 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
         
     </TableRow>
+    
+        <TableRow 
+            android:id="@+id/tableRow4"            
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dip">
+    
+                <TextView
+            android:id="@+id/txtUpdatesAmt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/numUpdates"
+            android:textColor="@android:color/white"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+        </TableRow>
 
         <TextView
             android:id="@+id/txtNoContent"
@@ -119,7 +135,19 @@
              android:textColor="@android:color/white"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-  </TableLayout>
     
+
+  </TableLayout>
+
+<Button
+    android:id="@+id/btnStop"
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/tableLayout1"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="19dp"
+    android:textColor="@android:color/black"
+    android:text="@string/stop" />
 
 </RelativeLayout>

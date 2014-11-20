@@ -9,6 +9,8 @@
     <string name= "stock_name">Name:</string>
     <string name= "stock_price">Price:</string>
     <string name="stock_default">Stock Information:</string>
+    <string name= "numUpdates">Number of Updates</string>
+    <string name="stop">Stop Getting Updates</string>
     <string name="hello_user">Enter the stock quote symbol and then press Look Up!</string>
 
 </resources>
